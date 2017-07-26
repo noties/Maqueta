@@ -1,0 +1,20 @@
+repositories {
+    jcenter()
+    google()
+}
+
+apply plugin: 'java'
+
+sourceSets {
+    main {
+        java.srcDirs += LIBRARY_JAVA_SRC
+    }
+}
+
+dependencies {
+    compile SUPPORT_ANNOTATIONS
+    compile JAVA_POET
+}
+
+sourceCompatibility = '1.7'
+targetCompatibility = '1.7'

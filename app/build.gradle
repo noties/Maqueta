@@ -1,0 +1,40 @@
+repositories {
+    jcenter()
+    maven { url 'https://maven.google.com' }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+
+    compileSdkVersion TARGET_SDK
+    buildToolsVersion BUILD_TOOLS
+
+    defaultConfig {
+        applicationId "ru.noties.maqueta.sample"
+        minSdkVersion MIN_SDK
+        targetSdkVersion TARGET_SDK
+        versionCode 1
+        versionName version
+    }
+}
+
+dependencies {
+
+    compile project(':library')
+    annotationProcessor project(':library-compiler')
+
+    compile SUPPORT_ANNOTATIONS
+
+    compile 'ru.noties:debug:3.0.0@jar'
+
+    compile RX_JAVA
+    compile "android.arch.lifecycle:runtime:1.0.0-alpha5"
+    compile "android.arch.lifecycle:extensions:1.0.0-alpha5"
+
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile 'junit:junit:4.12'
+}
