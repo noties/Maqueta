@@ -2,7 +2,15 @@
 
 _Live_-models backed up by SharedPreferences and observable with Rx, LiveData or old-fashioned listeners
 
-[maven]
+
+[![maqueta](https://img.shields.io/maven-central/v/ru.noties/maqueta.svg?label=maqueta)](http://search.maven.org/#search|ga|1|g%3A%22ru.noties%22%20AND%20a%3A%maqueta%22)
+[![maqueta-compiler](https://img.shields.io/maven-central/v/ru.noties/maqueta-compiler.svg?label=maqueta-compiler)](http://search.maven.org/#search|ga|1|g%3A%22ru.noties%22%20AND%20a%3A%maqueta-compiler%22)
+
+```gradle
+    compile 'ru.noties:maqueta:1.0.0'
+    annotationProcessor 'ru.noties:maqueta-compiler:1.0.0'
+```
+
 
 This library is an abstraction other Android SharedPreferences, which allows easily _share_ arbitrary data between different application layers without exposing Android specifics. For example given the **decriptor** class:
 
