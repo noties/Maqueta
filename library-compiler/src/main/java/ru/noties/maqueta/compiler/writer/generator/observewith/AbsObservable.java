@@ -1,5 +1,7 @@
 package ru.noties.maqueta.compiler.writer.generator.observewith;
 
+import android.support.annotation.NonNull;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
@@ -11,7 +13,6 @@ import com.squareup.javapoet.TypeSpec;
 import java.util.HashSet;
 import java.util.List;
 
-import android.support.annotation.NonNull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 
@@ -24,6 +25,12 @@ abstract class AbsObservable {
 
     private static final FieldSpec LISTENER = FieldSpec.builder(TypeNames.Android.SHARED_PREFERENCES_LISTENER, "observeWithSharedPreferencesListener")
             .addModifiers(Modifier.PRIVATE)
+            .build();
+
+    private static final String KEYS_NAME = "OBSERVE_WITH_KEYS";
+
+    private static final FieldSpec KEYS = FieldSpec.builder(TypeNames.SET_STRING, KEYS_NAME)
+            .addModifiers(Modifier.PRIVATE, Modifier.STATIC, Modifier.FINAL)
             .build();
 
     static final String ENSURE_REGISTERED_NAME = "observeWithEnsureRegistered";
@@ -58,6 +65,8 @@ abstract class AbsObservable {
                 .build();
 
         builder
+                .addField(KEYS)
+                .addStaticBlock(keysStaticInitBlock())
                 .addField(LISTENER)
                 .addFields(fields())
                 .addMethod(notifyChange)
@@ -77,33 +86,12 @@ abstract class AbsObservable {
 
     private MethodSpec ensureListenerRegisteredMethod() {
 
-        final TypeName hashSetString = ParameterizedTypeName.get(
-                ClassName.get(HashSet.class),
-                TypeNames.STRING
-        );
-
-        final List<MaquetaKeyDef> keyDefs = typeDef.keys();
-
-        final CodeBlock.Builder keys = CodeBlock.builder()
-                .beginControlFlow("final $1T keys = new $2T($3L)", TypeNames.SET_STRING, hashSetString, keyDefs.size())
-                .beginControlFlow("");
-
-        for (MaquetaKeyDef keyDef : keyDefs) {
-            keys.addStatement("add($S)", keyDef.name());
-        }
-
-        keys
-                .endControlFlow()
-                .endControlFlow()
-                .addStatement("");
-
         return MethodSpec.methodBuilder(ENSURE_REGISTERED_NAME)
                 .addModifiers(Modifier.PRIVATE)
                 .beginControlFlow("if ($1N == null)", LISTENER.name)
                 .beginControlFlow("this.$1N = new $2T()", LISTENER.name, TypeNames.Android.SHARED_PREFERENCES_LISTENER)
-                .addCode(keys.build())
                 .beginControlFlow("@$1T public void onSharedPreferenceChanged($2T sp, $3T key)", Override.class, TypeNames.Android.SHARED_PREFERENCES, TypeNames.STRING)
-                .beginControlFlow("if ($1N.contains($2N))", "keys", "key")
+                .beginControlFlow("if ($1N.contains($2N))", KEYS_NAME, "key")
                 .addStatement("$1N()", notifyChange.name)
                 .endControlFlow()
                 .endControlFlow()
@@ -112,5 +100,31 @@ abstract class AbsObservable {
                 .addStatement("$1N.registerOnSharedPreferenceChangeListener($2N)", SourceCodeGenerator.SP_NAME, LISTENER.name)
                 .endControlFlow()
                 .build();
+    }
+
+    private CodeBlock keysStaticInitBlock() {
+
+        final TypeName hashSetString = ParameterizedTypeName.get(
+                ClassName.get(HashSet.class),
+                TypeNames.STRING
+        );
+
+        final List<MaquetaKeyDef> keyDefs = typeDef.keys();
+
+        final CodeBlock.Builder builder = CodeBlock.builder()
+                .beginControlFlow("final $1T keys = new $2T($3L)", TypeNames.SET_STRING, hashSetString, keyDefs.size())
+                .beginControlFlow("");
+
+        for (MaquetaKeyDef keyDef : keyDefs) {
+            builder.addStatement("add($S)", keyDef.name());
+        }
+
+        builder
+                .endControlFlow()
+                .endControlFlow()
+                .addStatement("")
+                .addStatement("$1N = $2T.unmodifiableSet($3N)", KEYS_NAME, ClassName.get("java.util", "Collections"), "keys");
+
+        return builder.build();
     }
 }
