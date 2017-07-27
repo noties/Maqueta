@@ -1,5 +1,7 @@
 package ru.noties.maqueta.compiler.writer.generator.observewith;
 
+import android.support.annotation.NonNull;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
@@ -11,7 +13,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import android.support.annotation.NonNull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 
@@ -61,13 +62,13 @@ class ObservableLiveData extends AbsObservable {
 
         final MethodSpec onActive = MethodSpec.methodBuilder("onActive")
                 .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PROTECTED)
                 .addStatement("$1N()", ENSURE_REGISTERED_NAME)
                 .build();
 
         final MethodSpec onInactive = MethodSpec.methodBuilder("onInactive")
                 .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
+                .addModifiers(Modifier.PROTECTED)
                 .addStatement("$1N()", UNREGISTER_NAME)
                 .build();
 
