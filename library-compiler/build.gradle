@@ -18,3 +18,10 @@ dependencies {
 
 sourceCompatibility = '1.7'
 targetCompatibility = '1.7'
+
+if (project.hasProperty('release')) {
+    ext.POM_NAME = 'Maqueta-Compiler'
+    ext.POM_ARTIFACT_ID = 'maqueta-compiler'
+    ext.POM_PACKAGING = 'jar'
+    apply from: './common-java-publishing-maven.gradle'
+}

@@ -20,3 +20,10 @@ dependencies {
 afterEvaluate {
     generateReleaseBuildConfig.enabled = false
 }
+
+if (project.hasProperty('release')) {
+    ext.POM_NAME = 'Maqueta'
+    ext.POM_ARTIFACT_ID = 'maqueta'
+    ext.POM_PACKAGING = 'aar'
+    apply from: 'https://raw.githubusercontent.com/chrisbanes/gradle-mvn-push/master/gradle-mvn-push.gradle'
+}
