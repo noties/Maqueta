@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 
 public abstract class SourceCodeUtils {
 
+    public static final String IDENT = "    ";
+
     public static ParameterSpec makeNonNullParameter(@NonNull FieldSpec spec) {
         return makeNonNullParameter(spec.type, spec.name);
     }

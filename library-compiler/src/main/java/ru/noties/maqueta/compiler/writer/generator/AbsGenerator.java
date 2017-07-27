@@ -1,19 +1,22 @@
 package ru.noties.maqueta.compiler.writer.generator;
 
+import android.support.annotation.NonNull;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import android.support.annotation.NonNull;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 
 import ru.noties.maqueta.Maqueta;
 import ru.noties.maqueta.compiler.parser.MaquetaKeyDef;
 import ru.noties.maqueta.compiler.parser.MaquetaTypeDef;
+import ru.noties.maqueta.compiler.writer.SourceCodeUtils;
 import ru.noties.maqueta.compiler.writer.TypeNames;
 
 abstract class AbsGenerator {
@@ -33,7 +36,8 @@ abstract class AbsGenerator {
                 .addField(SP)
                 .addFields(fields())
                 .addMethod(constructor())
-                .addMethods(methods());
+                .addMethods(methods())
+                .addMethod(clearMethod());
     }
 
     protected abstract List<FieldSpec> fields();
@@ -107,5 +111,30 @@ abstract class AbsGenerator {
         }
 
         return out;
+    }
+
+    private MethodSpec clearMethod() {
+
+        final String indent = SourceCodeUtils.IDENT;
+
+        final StringBuilder stringBuilder = new StringBuilder("$N.edit()");
+        final List<Object> arguments = new ArrayList<>(2);
+        arguments.add(SP_NAME);
+
+        for (MaquetaKeyDef keyDef : typeDef.keys()) {
+            stringBuilder.append('\n')
+                    .append(indent)
+                    .append(".remove($S)");
+            arguments.add(keyDef.name());
+        }
+
+        stringBuilder.append('\n')
+                .append(indent)
+                .append(".apply()");
+
+        return MethodSpec.methodBuilder("clear")
+                .addModifiers(Modifier.PUBLIC)
+                .addStatement(stringBuilder.toString(), arguments.toArray(new Object[arguments.size()]))
+                .build();
     }
 }

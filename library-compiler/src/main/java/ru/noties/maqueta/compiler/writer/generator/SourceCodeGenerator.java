@@ -1,13 +1,15 @@
 package ru.noties.maqueta.compiler.writer.generator;
 
+import android.support.annotation.NonNull;
+
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
 
-import android.support.annotation.NonNull;
 import javax.annotation.processing.ProcessingEnvironment;
 
 import ru.noties.maqueta.compiler.MaquetaException;
 import ru.noties.maqueta.compiler.parser.MaquetaTypeDef;
+import ru.noties.maqueta.compiler.writer.SourceCodeUtils;
 import ru.noties.maqueta.compiler.writer.generator.observewith.ObserveWith;
 
 public final class SourceCodeGenerator {
@@ -54,7 +56,7 @@ public final class SourceCodeGenerator {
 
         //noinspection ConstantConditions
         final JavaFile javaFile = JavaFile.builder(typeDef.packageName(), builder.build())
-                .indent("    ")
+                .indent(SourceCodeUtils.IDENT)
                 .build();
 
         return javaFile.toString();

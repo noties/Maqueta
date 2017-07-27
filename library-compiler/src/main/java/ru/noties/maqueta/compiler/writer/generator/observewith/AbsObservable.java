@@ -87,9 +87,11 @@ abstract class AbsObservable {
         final CodeBlock.Builder keys = CodeBlock.builder()
                 .beginControlFlow("final $1T keys = new $2T($3L)", TypeNames.SET_STRING, hashSetString, keyDefs.size())
                 .beginControlFlow("");
+
         for (MaquetaKeyDef keyDef : keyDefs) {
             keys.addStatement("add($S)", keyDef.name());
         }
+
         keys
                 .endControlFlow()
                 .endControlFlow()

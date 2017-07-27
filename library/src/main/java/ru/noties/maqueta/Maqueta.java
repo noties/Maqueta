@@ -32,9 +32,14 @@ public @interface Maqueta {
     /**
      * Annotation to indicate that a {@link java.lang.reflect.Field} in a descriptor class
      * should be present in the final Maqueta generated class.
+     *
      * Please note, that this field\'s value won\'t be shared between multiple instances
      * and it must be provided via builder factory method that will be generated.
-     * Also, if field\'s type is a primitive one, no validation will occur
+     * But if field\'s type is a primitive one, no validation will occur.
+     *
+     * This might be helpful if, for example, a default value must be dynamic, so
+     * it can be provided when constructing a class and be used as a default value
+     * for a key or to be an argument in some evaluation
      */
     @Retention(RetentionPolicy.SOURCE)
     @Target(ElementType.FIELD)
