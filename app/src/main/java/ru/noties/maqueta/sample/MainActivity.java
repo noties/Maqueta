@@ -23,17 +23,17 @@ public class MainActivity extends LifecycleActivity {
 
         final Whatever whatever = Whatever.builder(this, "whatever")
                 .id(23)
-                .dateSerializer(new MaquetaSerializer<Date, Long>() {
-                    @Override
-                    public Long serialize(Date date) {
-                        return date.getTime();
-                    }
+        .dateSerializer(new MaquetaSerializer<Date, Long>() {
+            @Override
+            public Long serialize(Date date) {
+                return date.getTime();
+            }
 
-                    @Override
-                    public Date deserialize(Long aLong) {
-                        return new Date(aLong);
-                    }
-                })
+            @Override
+            public Date deserialize(Long aLong) {
+                return new Date(aLong);
+            }
+        })
                 .build();
 
         Debug.i("key: %s, date: %s", whatever.key(), whatever.date());
